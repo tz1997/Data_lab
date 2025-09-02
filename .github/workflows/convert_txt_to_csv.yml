@@ -15,13 +15,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # Needed to push back
+          persist-credentials: true  # Required to push back
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Convert students.txt to students.csv
         run: |
           cp students.txt students.csv
-          # Example: if you need space->comma conversion, uncomment:
-          # sed -i 's/ /,/g' students.csv
+          # If space separated, uncomment:
+          # sed -i 's/ \+/,/g' students.csv
 
       - name: Commit and push CSV
         run: |
