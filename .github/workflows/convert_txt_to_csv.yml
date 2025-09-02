@@ -3,7 +3,7 @@ name: Convert TXT to CSV
 on:
   push:
     paths:
-      - students.txt  # Trigger workflow only if students.txt changes
+      - students.txt
     branches:
       - main
 
@@ -14,21 +14,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # Needed to push back
 
       - name: Convert students.txt to students.csv
         run: |
-          # Assuming students.txt is comma-separated or space-separated
-          # Here we just copy content to .csv for simplicity
           cp students.txt students.csv
-          
-          # Example: replace spaces with commas if your txt uses spaces
+          # Example: if you need space->comma conversion, uncomment:
           # sed -i 's/ /,/g' students.csv
 
       - name: Commit and push CSV
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add students.csv
           git commit -m "Update students.csv from students.txt" || echo "No changes to commit"
-          git push
-
+          git push origin HEAD:main
