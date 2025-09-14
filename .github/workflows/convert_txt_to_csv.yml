@@ -1,0 +1,32 @@
+name: Convert TXT to CSV
+
+on:
+  push:
+    paths:
+      - students.txt
+    branches:
+      - main
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # Required to push back
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Convert students.txt to students.csv
+        run: |
+          cp students.txt students.csv
+          # If space separated, uncomment:
+          # sed -i 's/ \+/,/g' students.csv
+      - name: Commit and push CSV
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add students.csv
+          git commit -m "Update students.csv from students.txt" || echo "No changes to commit"
+          git push origin HEAD:main
